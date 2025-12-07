@@ -28,9 +28,9 @@ sudo systemctl start mongod
 sudo systemctl enable mongod
 sudo systemctl status mongod
 
-# Install Java 11
-echo "Step 4: Installing Java 11..."
-sudo apt install -y openjdk-11-jdk
+# Install Java 17 (required for Jenkins 2.528+)
+echo "Step 4: Installing Java 17..."
+sudo apt install -y openjdk-17-jdk
 java -version
 
 # Install Maven
@@ -52,10 +52,21 @@ docker --version
 
 # Install Jenkins
 echo "Step 7: Installing Jenkins..."
-wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
-sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+# Add Jenkins repository (using recommended method)
+sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
 sudo apt update
 sudo apt install -y jenkins
+
+# Configure Jenkins to use Java 17
+sudo mkdir -p /etc/systemd/system/jenkins.service.d
+sudo tee /etc/systemd/system/jenkins.service.d/override.conf > /dev/null << 'JAVAEOF'
+[Service]
+Environment="JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64"
+Environment="PATH=/usr/lib/jvm/java-17-openjdk-amd64/bin:$PATH"
+JAVAEOF
+
+sudo systemctl daemon-reload
 sudo systemctl start jenkins
 sudo systemctl enable jenkins
 sudo usermod -aG docker jenkins
@@ -76,7 +87,9 @@ echo ""
 echo "Next steps:"
 echo "1. Get Jenkins initial password: sudo cat /var/lib/jenkins/secrets/initialAdminPassword"
 echo "2. Access Jenkins: http://YOUR_EC2_IP:8080"
-echo "3. Clone your repository: git clone https://github.com/MoizZaidi7/AngularCRUD-main.git"
-echo "4. Run deployment script: ./deploy-app.sh"
+echo "3. Complete Jenkins setup wizard (install suggested plugins)"
+echo "4. Clone your repository: git clone https://github.com/MoizZaidi7/AngularCRUD-main.git"
+echo "5. Run deployment script: ./deploy-app.sh"
 echo ""
+echo "Important: Make sure port 8080 is open in your EC2 Security Group for Jenkins"
 echo "Restart terminal or run: newgrp docker"
