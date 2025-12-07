@@ -34,7 +34,7 @@ pipeline {
             agent {
                 docker {
                     image "${DOCKER_IMAGE}"
-                    args '-v /var/run/docker.sock:/var/run/docker.sock --network host -v /var/lib/jenkins/.m2:/root/.m2'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock --network host'
                 }
             }
             steps {
@@ -42,10 +42,10 @@ pipeline {
                     echo 'Running Selenium Tests...'
                     dir('selenium-tests') {
                         // Clean and compile
-                        sh 'mvn clean compile'
+                        sh 'mvn clean compile -Dmaven.repo.local=/var/lib/jenkins/workspace/.m2/repository'
                         
                         // Run tests
-                        sh 'mvn test'
+                        sh 'mvn test -Dmaven.repo.local=/var/lib/jenkins/workspace/.m2/repository'
                     }
                 }
             }
