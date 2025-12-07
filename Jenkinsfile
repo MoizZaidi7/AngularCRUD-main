@@ -41,6 +41,11 @@ pipeline {
             steps {
                 script {
                     echo 'Running Selenium Tests...'
+                    
+                    // Create necessary directories with write permissions
+                    sh 'mkdir -p /tmp/selenium-cache /tmp/chrome-data'
+                    sh 'chmod -R 777 /tmp/selenium-cache /tmp/chrome-data'
+                    
                     dir('selenium-tests') {
                         // Create Maven repository in workspace
                         sh 'mkdir -p .m2/repository'
