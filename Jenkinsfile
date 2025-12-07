@@ -3,7 +3,7 @@ pipeline {
     
     environment {
         // Define your environment variables
-        GITHUB_REPO = 'https://github.com/YOUR_USERNAME/YOUR_REPO.git'
+        GITHUB_REPO = 'https://github.com/MoizZaidi7/AngularCRUD-main.git'
         DOCKER_IMAGE = 'markhobson/maven-chrome:latest'
         APP_URL = 'http://YOUR_EC2_IP:3000'
     }
