@@ -34,18 +34,22 @@ pipeline {
             agent {
                 docker {
                     image "${DOCKER_IMAGE}"
-                    args '-v /var/run/docker.sock:/var/run/docker.sock --network host'
+                    args '--network host -v $WORKSPACE:/workspace -w /workspace'
+                    reuseNode true
                 }
             }
             steps {
                 script {
                     echo 'Running Selenium Tests...'
                     dir('selenium-tests') {
+                        // Create Maven repository in workspace
+                        sh 'mkdir -p .m2/repository'
+                        
                         // Clean and compile
-                        sh 'mvn clean compile -Dmaven.repo.local=./.m2/repository'
+                        sh 'mvn clean compile -Dmaven.repo.local=${WORKSPACE}/selenium-tests/.m2/repository'
                         
                         // Run tests
-                        sh 'mvn test -Dmaven.repo.local=./.m2/repository'
+                        sh 'mvn test -Dmaven.repo.local=${WORKSPACE}/selenium-tests/.m2/repository'
                     }
                 }
             }
