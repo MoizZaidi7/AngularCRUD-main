@@ -42,10 +42,10 @@ pipeline {
                     echo 'Running Selenium Tests...'
                     dir('selenium-tests') {
                         // Clean and compile
-                        sh 'mvn clean compile -Dmaven.repo.local=/var/lib/jenkins/workspace/.m2/repository'
+                        sh 'mvn clean compile -Dmaven.repo.local=./.m2/repository'
                         
                         // Run tests
-                        sh 'mvn test -Dmaven.repo.local=/var/lib/jenkins/workspace/.m2/repository'
+                        sh 'mvn test -Dmaven.repo.local=./.m2/repository'
                     }
                 }
             }
