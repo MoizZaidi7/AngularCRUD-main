@@ -78,9 +78,10 @@
                     <testFailureIgnore>false</testFailureIgnore>
                     <forkCount>1</forkCount>
                     <reuseForks>false</reuseForks>
-                    <systemPropertyVariables>
+                    <argLine>-DSE_CACHE_PATH=/tmp/selenium-cache</argLine>
+                    <environmentVariables>
                         <SE_CACHE_PATH>/tmp/selenium-cache</SE_CACHE_PATH>
-                    </systemPropertyVariables>
+                    </environmentVariables>
                 </configuration>
             </plugin>
 
