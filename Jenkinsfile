@@ -5,7 +5,7 @@ pipeline {
         // Define your environment variables
         GITHUB_REPO = 'https://github.com/MoizZaidi7/AngularCRUD-main.git'
         DOCKER_IMAGE = 'markhobson/maven-chrome:latest'
-        APP_URL = 'http://YOUR_EC2_IP:3000'
+        APP_URL = 'http://13.62.230.47:3000'
     }
     
     stages {
@@ -34,7 +34,7 @@ pipeline {
             agent {
                 docker {
                     image "${DOCKER_IMAGE}"
-                    args '--network host -v $WORKSPACE:/workspace -w /workspace'
+                    args '--network host -v $WORKSPACE:/workspace -w /workspace -v /tmp:/tmp'
                     reuseNode true
                 }
             }
@@ -43,18 +43,21 @@ pipeline {
                     echo 'Running Selenium Tests...'
                     
                     // Create necessary directories with write permissions
-                    sh 'mkdir -p /tmp/selenium-cache /tmp/chrome-data'
-                    sh 'chmod -R 777 /tmp/selenium-cache /tmp/chrome-data'
+                    sh '''
+                        mkdir -p /tmp/selenium-cache
+                        chmod -R 777 /tmp/selenium-cache
+                    '''
                     
                     dir('selenium-tests') {
                         // Create Maven repository in workspace
                         sh 'mkdir -p .m2/repository'
                         
-                        // Clean and compile
-                        sh 'mvn clean compile -Dmaven.repo.local=${WORKSPACE}/selenium-tests/.m2/repository'
-                        
-                        // Run tests
-                        sh 'mvn test -Dmaven.repo.local=${WORKSPACE}/selenium-tests/.m2/repository'
+                        // Run tests with clean install
+                        sh '''
+                            mvn clean test \
+                            -Dmaven.repo.local=${WORKSPACE}/selenium-tests/.m2/repository \
+                            -Dwebdriver.chrome.whitelistedIps=
+                        '''
                     }
                 }
             }

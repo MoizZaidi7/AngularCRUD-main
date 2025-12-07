@@ -2,6 +2,7 @@ package com.usermanagement.tests;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -10,21 +11,25 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import java.time.Duration;
-import java.util.UUID;
 import static org.junit.Assert.*;
 
 public class UserManagementSeleniumTests {
     
     private WebDriver driver;
     private WebDriverWait wait;
-    private String baseUrl = "http://localhost:3000"; // Update with your deployed URL
+    private String baseUrl = "http://13.62.230.47:3000";
+    
+    @BeforeClass
+    public static void setupClass() {
+        // Setup WebDriverManager once for all tests
+        WebDriverManager.chromedriver().cachePath("/tmp/selenium-cache").setup();
+    }
     
     @Before
     public void setUp() {
         // Setup ChromeDriver for headless mode (for Jenkins)
-        System.setProperty("SE_CACHE_PATH", "/tmp/selenium-cache");
-        
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless=new");
         options.addArguments("--no-sandbox");
@@ -32,10 +37,7 @@ public class UserManagementSeleniumTests {
         options.addArguments("--disable-gpu");
         options.addArguments("--window-size=1920,1080");
         options.addArguments("--remote-allow-origins=*");
-        options.addArguments("--disable-extensions");
-        options.addArguments("--disable-background-networking");
-        options.addArguments("--single-process");
-        options.addArguments("--disable-features=VizDisplayCompositor");
+        options.addArguments("--disable-software-rasterizer");
         
         driver = new ChromeDriver(options);
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));

@@ -1,5 +1,5 @@
 // API Base URL - Update this to match your backend URL
-const API_URL = 'http://localhost:3000/api/users';
+const API_URL = 'http://13.62.230.47:3000/api/users';
 
 // DOM Elements
 const addUserForm = document.getElementById('addUserForm');
