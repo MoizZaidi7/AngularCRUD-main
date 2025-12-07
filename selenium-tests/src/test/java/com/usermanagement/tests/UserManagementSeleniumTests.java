@@ -28,6 +28,8 @@ public class UserManagementSeleniumTests {
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--disable-gpu");
         options.addArguments("--window-size=1920,1080");
+        options.addArguments("--remote-allow-origins=*");
+        options.addArguments("--user-data-dir=/tmp/chrome-" + System.currentTimeMillis());
         
         driver = new ChromeDriver(options);
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
