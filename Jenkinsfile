@@ -34,7 +34,7 @@ pipeline {
             agent {
                 docker {
                     image "${DOCKER_IMAGE}"
-                    args '-v /var/run/docker.sock:/var/run/docker.sock --network host'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock --network host -v $HOME/.m2:/root/.m2'
                 }
             }
             steps {
@@ -94,13 +94,12 @@ pipeline {
                         <p>Total test cases executed: 12+</p>
                         <p><a href="${env.BUILD_URL}testReport/">View Test Report</a></p>
                         <hr>
-                        <p><em>This email was sent to the user who triggered the pipeline.</em></p>
+                        <p><em>This email was sent to the user who triggered the pipeline.</em>
                     """,
-                    to: "${currentBuild.getBuildCauses()[0].userId ? currentBuild.getBuildCauses()[0].userId + '@gmail.com' : env.CHANGE_AUTHOR_EMAIL ?: 'your-email@gmail.com'}",
+                    to: "your-email@gmail.com",
                     from: 'jenkins@devops-assignment.com',
                     replyTo: 'noreply@devops-assignment.com',
-                    mimeType: 'text/html',
-                    attachmentsPattern: '**/target/surefire-reports/*.xml'
+                    mimeType: 'text/html'
                 )
             }
         }
@@ -123,13 +122,12 @@ pipeline {
                         <p><a href="${env.BUILD_URL}console">View Console Output</a></p>
                         <p><a href="${env.BUILD_URL}testReport/">View Test Report</a></p>
                         <hr>
-                        <p><em>This email was sent to the user who triggered the pipeline.</em></p>
+                        <p><em>This email was sent to the user who triggered the pipeline.</em>
                     """,
-                    to: "${currentBuild.getBuildCauses()[0].userId ? currentBuild.getBuildCauses()[0].userId + '@gmail.com' : env.CHANGE_AUTHOR_EMAIL ?: 'your-email@gmail.com'}",
+                    to: "your-email@gmail.com",
                     from: 'jenkins@devops-assignment.com',
                     replyTo: 'noreply@devops-assignment.com',
-                    mimeType: 'text/html',
-                    attachmentsPattern: '**/target/surefire-reports/*.xml'
+                    mimeType: 'text/html'
                 )
             }
         }
