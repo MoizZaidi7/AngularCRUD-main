@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: user-management-db
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: userManagementDB
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app-network
+
+  # Backend Application
+  backend:
+    build: .
+    container_name: user-management-app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/userManagementDB
+      - PORT=3000
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+    volumes:
+      - ./backend:/app/backend
+      - ./frontend:/app/frontend
+      - /app/backend/node_modules
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
